@@ -2,13 +2,17 @@ import { db } from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { calculateReadTime } from '@/lib/blog-utils'
 import { SEED_CATEGORIES, SEED_POSTS, SEED_SUBSCRIBERS } from '@/lib/seed-data'
+import { ensureSchema } from '@/lib/schema-setup'
 
 let seedPromise: Promise<void> | null = null
 
 /** Idempotent seed — runs once, fills the DB with realistic starter content. */
 export async function ensureSeed() {
   if (!seedPromise) {
-    seedPromise = seed().catch((e) => {
+    seedPromise = (async () => {
+      await ensureSchema()
+      await seed()
+    })().catch((e) => {
       seedPromise = null
       throw e
     })
