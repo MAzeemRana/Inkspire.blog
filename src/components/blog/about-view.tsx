@@ -56,7 +56,7 @@ export function AboutView() {
         {/* Author card */}
         <div className="mt-10 rounded-2xl border bg-card p-6 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
           <Avatar className="w-16 h-16 shrink-0">
-            <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80&auto=format&fit=crop" alt="Muhammad Azeem " />
+            <AvatarImage src="/azeem.jpg" alt="Muhammad Azeem " />
             <AvatarFallback className="bg-primary text-primary-foreground font-semibold">AC</AvatarFallback>
           </Avatar>
           <div className="flex-1">
