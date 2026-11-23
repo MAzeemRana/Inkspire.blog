@@ -32,9 +32,9 @@ function initialsOf(name: string) {
 }
 
 export function ProfileCard() {
-  const { data, isLoading } = useQuery<{ profile: Profile }>({
+  const { data, isLoading } = useQuery<{ user: Profile }>({
     queryKey: ['profile'],
-    queryFn: () => api('/api/auth/profile'),
+    queryFn: () => api('/api/auth/me'),
   })
 
   if (isLoading) {
@@ -48,11 +48,11 @@ export function ProfileCard() {
       </Card>
     )
   }
-  if (!data?.profile) {
+  if (!data?.user) {
     return <p className="text-muted-foreground">Could not load profile.</p>
   }
 
-  const p = data.profile
+  const p = data.user
   return <ProfileForm key={`${p.name}|${p.avatar ?? ''}|${p.bio ?? ''}`} initial={p} />
 }
 
@@ -65,7 +65,7 @@ function ProfileForm({ initial }: { initial: Profile }) {
   })
 
   const save = useMutation({
-    mutationFn: () => api('/api/auth/profile', { method: 'PATCH', body: JSON.stringify(form) }),
+    mutationFn: () => api('/api/auth/me', { method: 'PATCH', body: JSON.stringify(form) }),
     onSuccess: () => {
       toast.success('Profile updated. Every article now shows your new name and photo.')
       queryClient.invalidateQueries({ queryKey: ['profile'] })
