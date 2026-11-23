@@ -1,33 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getSession, setSessionCookie } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { requireAuth, setSessionCookie } from '@/lib/auth'
-
-/** Public-safe shape of the admin profile (never exposes the password hash). */
-function toProfile(user: {
-  id: string
-  email: string
-  name: string
-  avatar: string | null
-  bio: string | null
-}) {
-  return { id: user.id, email: user.email, name: user.name, avatar: user.avatar, bio: user.bio }
-}
 
 export async function GET() {
-  try {
-    const auth = await requireAuth()
-    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    return NextResponse.json({ profile: toProfile(auth) })
-  } catch (e) {
-    console.error('[profile:GET]', e)
-    return NextResponse.json({ error: 'Failed to load profile.' }, { status: 500 })
-  }
+  const session = await getSession()
+  if (!session) return NextResponse.json({ user: null })
+  const user = await db.user.findUnique({
+    where: { id: session.uid },
+    select: { id: true, email: true, name: true, avatar: true, bio: true, role: true },
+  })
+  return NextResponse.json({ user })
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    const auth = await requireAuth()
-    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await getSession()
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const body = (await req.json()) as {
       name?: string
@@ -50,7 +38,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const user = await db.user.update({
-      where: { id: auth.id },
+      where: { id: session.uid },
       data: { name, avatar: avatar || null, bio: bio || null },
     })
 
@@ -58,9 +46,12 @@ export async function PATCH(req: NextRequest) {
     // immediately, without forcing a logout/login.
     await setSessionCookie({ uid: user.id, email: user.email, name: user.name })
 
-    return NextResponse.json({ profile: toProfile(user), message: 'Profile updated.' })
+    return NextResponse.json({
+      user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar, bio: user.bio },
+      message: 'Profile updated.',
+    })
   } catch (e) {
-    console.error('[profile:PATCH]', e)
+    console.error('[me:PATCH]', e)
     return NextResponse.json({ error: 'Failed to update profile.' }, { status: 500 })
   }
 }
