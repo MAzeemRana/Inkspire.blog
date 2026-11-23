@@ -20,6 +20,13 @@ export function AboutView() {
   const s = data?.settings
   const paragraphs = (s?.aboutText || '').split('\n').filter(Boolean)
 
+  // Author card data comes from the database (the profile you edit in Admin → Settings).
+  const authorName = s?.author?.name || 'The Author'
+  const authorAvatar = s?.author?.avatar || undefined
+  const authorBio =
+    s?.author?.bio ||
+    'I build things for the web and write about the process — the wins, the failures and everything in between.'
+
   const values = [
     { icon: <Target className="w-5 h-5" />, title: 'First-hand, always', text: 'Every claim comes from a real project — real numbers, real screenshots, real mistakes.' },
     { icon: <PenLine className="w-5 h-5" />, title: 'Depth over volume', text: 'One thoughtful essay per week beats daily filler. Quality is the only growth strategy here.' },
@@ -56,15 +63,13 @@ export function AboutView() {
         {/* Author card */}
         <div className="mt-10 rounded-2xl border bg-card p-6 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
           <Avatar className="w-16 h-16 shrink-0">
-            <AvatarImage src="/azeem.jpg" alt="Muhammad Azeem " />
-            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">AC</AvatarFallback>
+            <AvatarImage src={authorAvatar} alt={authorName} />
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">{initials(authorName)}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="font-serif text-xl font-bold">Muhammad Azeem </p>
+            <p className="font-serif text-xl font-bold">{authorName}</p>
             <p className="text-sm text-muted-foreground mt-1">Writer &amp; developer behind {s?.siteName || 'Inkspire'}</p>
-            <p className="mt-2 text-sm text-foreground/80 leading-relaxed">
-              I build things for the web and write about the process — the wins, the failures and everything in between.
-            </p>
+            <p className="mt-2 text-sm text-foreground/80 leading-relaxed">{authorBio}</p>
             <div className="mt-3 flex gap-2">
               {[
                 { href: s?.twitter, icon: <Twitter className="w-4 h-4" />, label: 'Twitter' },
