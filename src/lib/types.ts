@@ -70,6 +70,8 @@ export interface Settings {
   contactEmail?: string | null
   metaKeywords?: string | null
   metaDescription?: string | null
+  updatedAt?: string
+  author?: { name: string; avatar?: string | null; bio?: string | null } | null
 }
 
 export interface Stats {
