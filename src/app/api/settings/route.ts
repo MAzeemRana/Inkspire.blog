@@ -12,7 +12,17 @@ export async function GET() {
         data: { id: 'main', aboutText: 'This blog is under construction.' },
       })
     }
-    return NextResponse.json({ settings })
+    // Public author info (first registered user) — shown on the About page author card.
+    let author: { name: string; avatar: string | null; bio: string | null } | null = null
+    try {
+      author = await db.user.findFirst({
+        orderBy: { createdAt: 'asc' },
+        select: { name: true, avatar: true, bio: true },
+      })
+    } catch (authorErr) {
+      console.error('[settings:GET] author lookup failed:', authorErr)
+    }
+    return NextResponse.json({ settings: { ...settings, author } })
   } catch (e) {
     console.error('[settings:GET]', e)
     return NextResponse.json({ error: 'Failed to load settings.' }, { status: 500 })
