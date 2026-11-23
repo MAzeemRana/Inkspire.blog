@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api, getErrorMessage } from '@/lib/api-client'
+import { ProfileCard } from './profile-card'
 import type { Settings } from '@/lib/types'
 
 interface FormState {
@@ -98,6 +99,7 @@ function SettingsForm({ initial }: { initial: Settings }) {
         <h1 className="font-serif text-3xl font-bold">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">Site identity, SEO defaults, social links and admin security.</p>
       </div>
+            <ProfileCard />
 
       {/* Site identity */}
       <Card className="rounded-xl">
