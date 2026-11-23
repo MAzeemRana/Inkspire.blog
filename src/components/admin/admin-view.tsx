@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Feather, Lock, Loader2, Info } from 'lucide-react'
+import { Feather, Lock, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -99,20 +99,6 @@ function LoginForm() {
           Sign in
         </Button>
       </form>
-
-      <div className="mt-4 rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4 flex gap-3 items-start">
-        <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-        <div className="text-sm">
-          <p className="font-medium">Demo credentials</p>
-          <p className="text-muted-foreground mt-0.5 font-mono text-xs leading-relaxed">
-            admin@inkspire.io<br />
-            inkspire2026
-          </p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Change the password after first login in Settings. For production, create a fresh admin and delete this one.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
